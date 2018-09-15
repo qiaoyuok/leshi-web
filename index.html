@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>乐视登录</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="md5.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+    	.box{
+    		width: 80%;
+    		height: 300px;
+    		background: red;
+    		margin: auto;
+    		display: flex;
+    		justify-content: center;
+    		flex-direction: column;
+    	}
+    	.box .item{
+    		width: 100%;
+    		height: 70px;
+    		display: flex;
+    		align-items: center;
+    		justify-content: center;
+    	}
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="item"><label>用户名</label><input type="text" id="loginname"></div>
+        <div class="item"><label>密　码</label><input type="text" id="password"></div>
+        <div class="item"><button onclick="login()">登录</button></div>
+    </div>
+    <script type="text/javascript">
+    function login() {
+        $loginname = $("#loginname").val();
+        $password = $("#password").val();
+        var t = Math.random();
+        // console.log(t)
+        var $devid = hex_md5("" + t);
+        // console.log("devid", $devid)
+        var sign = "8.9.9" + $loginname + $password + $devid + "e3F5gIfT3zj43MAc3F";
+        // console.log(sign)
+        var $sign = hex_md5(sign);
+        var data = "loginname=" + $loginname + "&password=" + $password + "&devid=" + $devid + "&sign=" + $sign + "&responseType=jsonp";
+        // console.log(data)
+        $.ajax({
+            url:"http://dynamic.user.app.m.letv.com/android/dynamic.php?mod=passport&ctl=index&act=newLogin&pcode=010110000&version=8.9.9",
+            type:"get",
+            data:data,
+            dataType: "jsonp",
+            jsonp: "callback",//传递给请求处理程序或页面的，标识jsonp回调函数名(一般为:callback)
+            jsonpCallback: "GetData",//callback的function名称
+            success:function(data){
+                console.log(data)
+            },
+            error:function(data){
+                console.log("error:",data)
+            }
+        })
+    }
+        function GetData(data) {
+            console.log(data)
+        }
+    </script>
+</body>
+
+</html>
